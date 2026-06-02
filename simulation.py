@@ -6,7 +6,7 @@ from physics import calc_properties
 # Este é o motor isolado que vai rodar em velocidade C++ (cache=True)
 @njit(cache=True)
 def _core_sim_loop(steps, N, dt, dx, T, T_inf, U_top, U_bottom, record_interval, xw, xp, xf, xc, xa, T_f):
-    # Pré-alocando as matrizes (Numba adora matrizes de tamanho fixo)
+    # Pré-alocando as matrizes para o Numba
     num_records = (steps // record_interval) + 1
     time_records = np.zeros(num_records)
     top_records = np.zeros(num_records)
@@ -20,7 +20,6 @@ def _core_sim_loop(steps, N, dt, dx, T, T_inf, U_top, U_bottom, record_interval,
 
     record_idx = 0
 
-    # Este é o gargalo que agora rodará em milissegundos
     for step in range(steps):
         # Atualiza as propriedades térmicas para cada nó
         for i in range(N):
@@ -36,11 +35,11 @@ def _core_sim_loop(steps, N, dt, dx, T, T_inf, U_top, U_bottom, record_interval,
 
         # Contorno Superior (Topo)
         q_top = U_top * (T_inf - T[0])
-        T_new[0] = T[0] + (dt / (rho_arr[0] * cp_arr[0] * dx)) * (q_top + k_arr[0] * (T[1] - T[0]) / dx)
+        T_new[0] = T[0] + (dt / (rho_arr[0] * cp_arr[0] * (dx/2))) * (q_top + k_arr[0] * (T[1] - T[0]) / dx)
 
         # Contorno Inferior (Fundo)
         q_bottom = U_bottom * (T_inf - T[N-1])
-        T_new[N-1] = T[N-1] + (dt / (rho_arr[N-1] * cp_arr[N-1] * dx)) * (q_bottom + k_arr[N-1] * (T[N-2] - T[N-1]) / dx)
+        T_new[N-1] = T[N-1] + (dt / (rho_arr[N-1] * cp_arr[N-1] * (dx/2))) * (q_bottom + k_arr[N-1] * (T[N-2] - T[N-1]) / dx)
         
         # Atualiza os nós para o próximo ciclo
         for i in range(N):
@@ -88,14 +87,13 @@ def run_simulation(tunnel_params, box_params, comp_params, sim_params):
     xa = float(comp_params['ash'])
     T_f = float(comp_params['t_f'])
 
-    # --- CHAMA O MOTOR NUMBA ---
-    # Aqui a mágica de velocidade acontece
+    # CHAMA O NUMBA 
     time_res, top_res, center_res, bottom_res = _core_sim_loop(
         steps, N, dt, dx, T, T_inf, U_top, U_bottom, record_interval,
         xw, xp, xf, xc, xa, T_f
     )
 
-    # O Polars assume o controle e organiza a tabela
+    # Polars 
     df_results = pl.DataFrame({
         "Tempo (min)": time_res,
         "Superfície Topo (°C)": top_res,
