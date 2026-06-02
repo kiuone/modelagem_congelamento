@@ -82,3 +82,9 @@ Por se tratar de um método numérico explícito, o passo de tempo ($\Delta t$) 
 $$Fo = \frac{\alpha_{max} \cdot \Delta t}{\Delta x^2} \le 0.5$$
 
 Onde $\alpha_{max}$ é a máxima difusividade térmica ($\frac{k}{\rho \cdot c_p}$) alcançada pela matriz biológica na fase congelada. O sistema está desenhado para interromper a execução e gerar um alerta caso o critério $Fo > 0.5$ seja violado pelas configurações introduzidas pelo utilizador.
+
+## **BIBLIOGRAFIA**
+
+ASHRAE. 2002 ASHRAE Handbook: Refrigeration. SI Edition. Atlanta: ASHRAE, 2002. Capítulo 8: Thermal Properties of Foods, p. 8.1-8.30.
+
+CHEN, Yulian et al. Differences in physicochemical and nutritional properties of breast and thigh meat from crossbred chickens, commercial broilers, and spent hens. Asian-Australasian journal of animal sciences, v. 29, n. 6, p. 855, 2015.
