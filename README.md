@@ -1,7 +1,9 @@
 # modelagem congelamento
-# 🧮 Fundamentos Matemáticos do Simulador Térmico
+# Fundamentos Matemáticos do Simulador Térmico
 
 Este documento detalha o motor termodinâmico do projeto. A simulação da curva de congelação baseia-se num modelo de **Transferência de Calor Unidimensional (1D)**, resolvido numericamente através do **Método das Diferenças Finitas (MDF)** numa formulação explícita.
+
+**acesse aqui para acessar o simulador na web: https://modelagem-congelamento.streamlit.app**
 
 O objetivo do algoritmo é prever o arrefecimento desde a superfície até ao centro térmico do produto, lidando com o calor sensível, a extração do calor latente e a transição de fase gradual.
 
