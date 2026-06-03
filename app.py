@@ -172,4 +172,6 @@ if st.button("▶️ Iniciar Integração Numérica", type="primary", use_contai
                 st.plotly_chart(fig, use_container_width=True)
                 
             except Exception as e:
+                import traceback
                 st.error(f"Erro Crítico durante o cálculo da malha: {e}")
+                st.code(traceback.format_exc())
