@@ -27,19 +27,19 @@ def _core_sim_loop(steps, N, dt, dx, T, T_inf, U_top, U_bottom, record_interval,
         # 1. Avaliação dos nós internos (Condução pura)
         # O laço não afeta as fronteiras (índices 0 e N-1)
         for i in range(1, N - 1):
-            cp, k, rho = calc_properties(T[i], xw, xp, xf, xc, xa, T_f)
+            k, rho, cp = calc_properties(T[i], xw, xp, xf, xc, xa, T_f)
             alpha = k / (rho * cp)
             T_new[i] = T[i] + alpha * dt * (T[i+1] - 2*T[i] + T[i-1]) / (dx**2)
             
         # 2. Avaliação da fronteira superior (Convecção + Filme Plástico)
         # Utiliza-se o fator 2 para compensar o meio-volume de controle da malha de contorno
-        cp_top, k_top, rho_top = calc_properties(T[0], xw, xp, xf, xc, xa, T_f)
+        k_top, rho_top, cp_top = calc_properties(T[0], xw, xp, xf, xc, xa, T_f)
         T_new[0] = T[0] + (2.0 * dt / (rho_top * cp_top * dx)) * (
             U_top * (T_inf - T[0]) - k_top * (T[0] - T[1]) / dx
         )
         
         # 3. Avaliação da fronteira inferior (Convecção + Filme + Papelão + Esteira)
-        cp_bot, k_bot, rho_bot = calc_properties(T[N-1], xw, xp, xf, xc, xa, T_f)
+        k_bot, rho_bot, cp_bot = calc_properties(T[N-1], xw, xp, xf, xc, xa, T_f)
         T_new[N-1] = T[N-1] + (2.0 * dt / (rho_bot * cp_bot * dx)) * (
             U_bottom * (T_inf - T[N-1]) - k_bot * (T[N-1] - T[N-2]) / dx
         )
